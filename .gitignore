@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts (keep main.js for distribution)
+main.js.map
+*.js.map
+
+# Compiled JS in src (only keep .ts source)
+src/**/*.js
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Obsidian
+data.json

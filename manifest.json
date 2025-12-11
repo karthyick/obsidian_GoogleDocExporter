@@ -1,0 +1,11 @@
+{
+	"id": "obsidian-gdocs-exporter",
+	"name": "Google Docs Exporter",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Export Obsidian notes to Google Docs-compatible formats. Converts Mermaid diagrams to interactive links, preserves code blocks with formatting, and transforms markdown to native Google Docs styles.",
+	"author": "KR",
+	"authorUrl": "https://github.com/karthyick",
+	"fundingUrl": "",
+	"isDesktopOnly": false
+}
