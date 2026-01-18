@@ -106,7 +106,7 @@ The link opens the diagram in Mermaid Live editor where you can:
 - Edit the diagram code
 - Export as PNG/SVG
 - Share with others
-
+```
 ## Settings
 
 Access settings via: **Settings → Plugin Options → Google Docs Exporter**
