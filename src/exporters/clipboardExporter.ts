@@ -48,9 +48,6 @@ export class ClipboardExporter {
 			await navigator.clipboard.write([clipboardItem]);
 			
 		} catch (error) {
-			// Requirement 8.2: Log error details for debugging
-			console.error('Clipboard export error:', error);
-			
 			// Re-throw with more context
 			if (error instanceof Error) {
 				throw new Error(`Failed to copy to clipboard: ${error.message}`);
@@ -124,14 +121,10 @@ export class ClipboardExporter {
 					return this.imageToHtml(block, settings);
 				
 				default:
-					console.warn('Unknown block type encountered:', (block as any).type);
+					// Unknown block type - skip silently
 					return '';
 			}
-		} catch (error) {
-			// Requirement 8.2: Log error for individual element failure
-			console.error('Error converting block to HTML:', error);
-			console.error('Block type:', block.type);
-			
+		} catch {
 			// Graceful degradation: return paragraph with error message
 			return `<p style="color: #999; font-style: italic;">[Error rendering ${block.type} block]</p>`;
 		}

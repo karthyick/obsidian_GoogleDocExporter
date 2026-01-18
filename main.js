@@ -243,12 +243,11 @@ var ExportModal = class extends import_obsidian.Modal {
           cls: "export-modal-no-content"
         });
       }
-    } catch (error) {
+    } catch (e) {
       el.createEl("p", {
         text: "Error reading file content",
         cls: "export-modal-error"
       });
-      console.error("Error reading file for preview:", error);
     }
   }
   /**
@@ -267,8 +266,7 @@ var ExportModal = class extends import_obsidian.Modal {
     try {
       await this.onExport(this.file, this.selectedFormat);
       this.close();
-    } catch (error) {
-      console.error("Export failed:", error);
+    } catch (e) {
     } finally {
       this.isExporting = false;
       if (this.exportButton) {
@@ -23902,9 +23900,7 @@ var MermaidEncoder = class {
       const compressed = deflate_1(utf8Bytes);
       const base64 = this.uint8ArrayToBase64(compressed);
       return `https://mermaid.live/edit#pako:${base64}`;
-    } catch (error) {
-      console.error("Mermaid encoding error:", error);
-      console.error("Code:", code);
+    } catch (e) {
       return "https://mermaid.live/edit";
     }
   }
@@ -23927,8 +23923,7 @@ var MermaidEncoder = class {
         return match[1];
       }
       return "diagram";
-    } catch (error) {
-      console.error("Error extracting diagram type:", error);
+    } catch (e) {
       return "diagram";
     }
   }
@@ -23982,8 +23977,7 @@ var MermaidEncoder = class {
         binaryString += String.fromCharCode(bytes[i]);
       }
       return btoa(binaryString);
-    } catch (error) {
-      console.error("Base64 encoding error:", error);
+    } catch (e) {
       return "";
     }
   }
@@ -24026,19 +24020,13 @@ var MarkdownParser = class {
       const tokens = marked.lexer(processedMarkdown);
       const blocks = [];
       for (const token of tokens) {
-        try {
-          const block2 = this.tokenToBlock(token);
-          if (block2) {
-            blocks.push(block2);
-          }
-        } catch (error) {
-          console.error("Error parsing token:", error);
-          console.error("Token type:", token.type);
+        const block2 = this.tokenToBlock(token);
+        if (block2) {
+          blocks.push(block2);
         }
       }
       return { blocks };
-    } catch (error) {
-      console.error("Markdown parsing error:", error);
+    } catch (e) {
       return { blocks: [] };
     }
   }
@@ -24071,9 +24059,7 @@ var MarkdownParser = class {
         return `
 ${placeholder}
 `;
-      } catch (error) {
-        console.error("Error encoding Mermaid block:", error);
-        console.error("Mermaid code:", code);
+      } catch (e) {
         return `
 \`\`\`mermaid
 ${code}\`\`\`
@@ -24107,7 +24093,7 @@ ${code}\`\`\`
       case "space":
         return null;
       default:
-        if ("text" in token) {
+        if ("text" in token && typeof token.text === "string") {
           return {
             type: "paragraph",
             content: this.parseInlineContent(token.text)
@@ -24322,7 +24308,7 @@ ${code}\`\`\`
         const escapeToken = token;
         return { type: "text", content: escapeToken.text };
       default:
-        if ("text" in token) {
+        if ("text" in token && typeof token.text === "string") {
           return { type: "text", content: token.text };
         }
         return null;
@@ -24420,7 +24406,6 @@ var DocxExporter = class {
       const outputFilename = filename.endsWith(".docx") ? filename : `${filename}.docx`;
       (0, import_file_saver.saveAs)(blob, outputFilename);
     } catch (error) {
-      console.error("DOCX export error:", error);
       if (error instanceof Error) {
         throw new Error(`Failed to export DOCX: ${error.message}`);
       } else {
@@ -24589,12 +24574,9 @@ var DocxExporter = class {
           }
           return [imageParagraph];
         default:
-          console.warn("Unknown block type encountered:", block2.type);
           return [];
       }
-    } catch (error) {
-      console.error("Error converting block to DOCX:", error);
-      console.error("Block type:", block2.type);
+    } catch (e) {
       return [
         new Paragraph({
           children: [
@@ -25070,7 +25052,6 @@ var ClipboardExporter = class {
       const clipboardItem = new ClipboardItem({ "text/html": blob });
       await navigator.clipboard.write([clipboardItem]);
     } catch (error) {
-      console.error("Clipboard export error:", error);
       if (error instanceof Error) {
         throw new Error(`Failed to copy to clipboard: ${error.message}`);
       } else {
@@ -25124,12 +25105,9 @@ var ClipboardExporter = class {
         case "image":
           return this.imageToHtml(block2, settings);
         default:
-          console.warn("Unknown block type encountered:", block2.type);
           return "";
       }
-    } catch (error) {
-      console.error("Error converting block to HTML:", error);
-      console.error("Block type:", block2.type);
+    } catch (e) {
       return `<p style="color: #999; font-style: italic;">[Error rendering ${block2.type} block]</p>`;
     }
   }
@@ -25307,7 +25285,6 @@ var HtmlExporter = class {
       const outputFilename = filename.endsWith(".html") ? filename : `${filename}.html`;
       (0, import_file_saver2.saveAs)(blob, outputFilename);
     } catch (error) {
-      console.error("HTML export error:", error);
       if (error instanceof Error) {
         throw new Error(`Failed to export HTML: ${error.message}`);
       } else {
@@ -25487,12 +25464,9 @@ var HtmlExporter = class {
         case "image":
           return this.imageToHtml(block2, settings);
         default:
-          console.warn("Unknown block type encountered:", block2.type);
           return "";
       }
-    } catch (error) {
-      console.error("Error converting block to HTML:", error);
-      console.error("Block type:", block2.type);
+    } catch (e) {
       return `<p style="color: #999; font-style: italic;">[Error rendering ${block2.type} block]</p>
 `;
     }
@@ -25787,9 +25761,6 @@ var GoogleDocsExporterPlugin = class extends import_obsidian3.Plugin {
       }
       progressNotice = new import_obsidian3.Notice("Exporting...", 0);
       const content = await this.app.vault.read(file);
-      if (!content || content.trim().length === 0) {
-        console.log("Exporting empty note:", file.path);
-      }
       switch (format2) {
         case "docx":
           await DocxExporter.export(content, file.basename, this.settings);
@@ -25816,12 +25787,6 @@ var GoogleDocsExporterPlugin = class extends import_obsidian3.Plugin {
       }
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       new import_obsidian3.Notice(`\u274C Export failed: ${errorMessage}`);
-      console.error("Export error:", error);
-      console.error("File:", (file == null ? void 0 : file.path) || "No file");
-      console.error("Format:", format2);
-      if (error instanceof Error && error.stack) {
-        console.error("Stack trace:", error.stack);
-      }
     }
   }
 };

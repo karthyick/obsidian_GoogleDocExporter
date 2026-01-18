@@ -42,12 +42,8 @@ export class MermaidEncoder {
       // Generate Mermaid Live URL
       return `https://mermaid.live/edit#pako:${base64}`;
       
-    } catch (error) {
-      // If encoding fails, log error and return a fallback URL
-      console.error('Mermaid encoding error:', error);
-      console.error('Code:', code);
-      
-      // Return a basic Mermaid Live URL without encoding
+    } catch {
+      // If encoding fails, return a fallback URL
       return 'https://mermaid.live/edit';
     }
   }
@@ -79,9 +75,8 @@ export class MermaidEncoder {
 
       return 'diagram';
       
-    } catch (error) {
+    } catch {
       // If extraction fails, return default
-      console.error('Error extracting diagram type:', error);
       return 'diagram';
     }
   }
@@ -144,9 +139,8 @@ export class MermaidEncoder {
       // Convert binary string to base64
       return btoa(binaryString);
       
-    } catch (error) {
-      // If conversion fails, log error and return empty string
-      console.error('Base64 encoding error:', error);
+    } catch {
+      // If conversion fails, return empty string
       return '';
     }
   }

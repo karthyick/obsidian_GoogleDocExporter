@@ -1,7 +1,5 @@
 # Google Docs Exporter for Obsidian
 
-> **Work in Progress** - This plugin is under active development. Features may change and bugs may exist.
-
 Export your Obsidian notes to Google Docs-compatible formats with intelligent Mermaid diagram handling, code block preservation, and full markdown formatting support.
 
 ## Features

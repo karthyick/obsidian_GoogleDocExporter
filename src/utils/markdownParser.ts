@@ -88,23 +88,16 @@ export class MarkdownParser {
 			// Convert tokens to ContentBlocks
 			const blocks: ContentBlock[] = [];
 			for (const token of tokens) {
-				try {
-					const block = this.tokenToBlock(token);
-					if (block) {
-						blocks.push(block);
-					}
-				} catch (error) {
-					// Graceful degradation: log error and continue with next token
-					console.error('Error parsing token:', error);
-					console.error('Token type:', token.type);
+				const block = this.tokenToBlock(token);
+				if (block) {
+					blocks.push(block);
 				}
 			}
 
 			return { blocks };
 			
-		} catch (error) {
-			// If parsing completely fails, log error and return empty content
-			console.error('Markdown parsing error:', error);
+		} catch {
+			// If parsing completely fails, return empty content
 			return { blocks: [] };
 		}
 	}
@@ -149,12 +142,8 @@ export class MarkdownParser {
 				// Return placeholder wrapped in paragraph to preserve structure
 				return `\n${placeholder}\n`;
 				
-			} catch (error) {
-				// If Mermaid encoding fails, log error and return code block as-is
-				console.error('Error encoding Mermaid block:', error);
-				console.error('Mermaid code:', code);
-				
-				// Return as regular code block
+			} catch {
+				// If Mermaid encoding fails, return code block as-is
 				return `\n\`\`\`mermaid\n${code}\`\`\`\n`;
 			}
 		});
@@ -196,10 +185,10 @@ export class MarkdownParser {
 			
 			default:
 				// For unsupported types, try to extract text if available
-				if ('text' in token) {
+				if ('text' in token && typeof (token as { text?: string }).text === 'string') {
 					return {
 						type: 'paragraph',
-						content: this.parseInlineContent((token as any).text)
+						content: this.parseInlineContent((token as { text: string }).text)
 					};
 				}
 				return null;
@@ -462,8 +451,8 @@ export class MarkdownParser {
 			
 			default:
 				// For unknown types, try to extract text
-				if ('text' in token) {
-					return { type: 'text', content: (token as any).text };
+				if ('text' in token && typeof (token as { text?: string }).text === 'string') {
+					return { type: 'text', content: (token as { text: string }).text };
 				}
 				return null;
 		}

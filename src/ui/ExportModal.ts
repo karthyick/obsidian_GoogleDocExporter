@@ -127,12 +127,11 @@ export class ExportModal extends Modal {
 				});
 			}
 
-		} catch (error) {
+		} catch {
 			el.createEl('p', {
 				text: 'Error reading file content',
 				cls: 'export-modal-error'
 			});
-			console.error('Error reading file for preview:', error);
 		}
 	}
 
@@ -159,10 +158,9 @@ export class ExportModal extends Modal {
 			
 			// Close modal on success
 			this.close();
-		} catch (error) {
+		} catch {
 			// Error handling is done in the plugin's exportNote method
 			// Just reset the button state here
-			console.error('Export failed:', error);
 		} finally {
 			// Reset button state
 			this.isExporting = false;
