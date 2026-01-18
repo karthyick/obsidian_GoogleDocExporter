@@ -1,11 +1,11 @@
-import { App, PluginSettingTab, Setting } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { PluginSettings } from '../types';
 
 /**
  * Interface for the plugin that uses this settings tab.
- * This allows the settings tab to save settings back to the plugin.
+ * Extends Plugin to satisfy PluginSettingTab constructor requirements.
  */
-interface GoogleDocsExporterPlugin {
+interface GoogleDocsExporterPlugin extends Plugin {
 	settings: PluginSettings;
 	saveSettings(): Promise<void>;
 }
@@ -13,14 +13,14 @@ interface GoogleDocsExporterPlugin {
 /**
  * SettingsTab provides a UI for configuring all plugin settings.
  * Each setting control calls plugin.saveSettings() on change to persist values.
- * 
+ *
  * Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10
  */
 export class SettingsTab extends PluginSettingTab {
 	plugin: GoogleDocsExporterPlugin;
 
 	constructor(app: App, plugin: GoogleDocsExporterPlugin) {
-		super(app, plugin as any);
+		super(app, plugin);
 		this.plugin = plugin;
 	}
 

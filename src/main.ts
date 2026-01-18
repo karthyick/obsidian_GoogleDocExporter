@@ -187,10 +187,7 @@ export default class GoogleDocsExporterPlugin extends Plugin {
 			// Read file content
 			const content = await this.app.vault.read(file);
 
-			// Requirement 7.1: Handle empty note gracefully
-			if (!content || content.trim().length === 0) {
-				console.log('Exporting empty note:', file.path);
-			}
+			// Requirement 7.1: Handle empty note gracefully - export proceeds with empty content
 
 			// Export based on format
 			switch (format) {
@@ -232,16 +229,6 @@ export default class GoogleDocsExporterPlugin extends Plugin {
 			// Requirement 8.1: Display error notification with error description
 			const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
 			new Notice(`❌ Export failed: ${errorMessage}`);
-
-			// Requirement 8.2: Log error details to console for debugging
-			console.error('Export error:', error);
-			console.error('File:', file?.path || 'No file');
-			console.error('Format:', format);
-			
-			// Log stack trace if available
-			if (error instanceof Error && error.stack) {
-				console.error('Stack trace:', error.stack);
-			}
 		}
 	}
 }

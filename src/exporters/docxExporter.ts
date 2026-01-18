@@ -70,9 +70,6 @@ export class DocxExporter {
 			saveAs(blob, outputFilename);
 			
 		} catch (error) {
-			// Requirement 8.2: Log error details for debugging
-			console.error('DOCX export error:', error);
-			
 			// Re-throw with more context
 			if (error instanceof Error) {
 				throw new Error(`Failed to export DOCX: ${error.message}`);
@@ -264,15 +261,10 @@ export class DocxExporter {
 					return [imageParagraph];
 				
 				default:
-					// Unknown block type - skip
-					console.warn('Unknown block type encountered:', (block as any).type);
+					// Unknown block type - skip silently
 					return [];
 			}
-		} catch (error) {
-			// Requirement 8.2: Log error for individual element failure
-			console.error('Error converting block to DOCX:', error);
-			console.error('Block type:', block.type);
-			
+		} catch {
 			// Graceful degradation: return a paragraph with error message
 			return [
 				new Paragraph({
